@@ -128,10 +128,11 @@ def column_ranks(arr, one_indexed=True, descending=True):
     return ranks
 
 
+# TODO: exporting median, payout as raw percent
 def format_dataframe(df, payout_amount=75):
     df.columns = ["Team", "Current", "Projection", "Median", "Payout"]
-    df["Median"] = df["Median"].map(lambda x: f"{x*100:.1f}%")
-    df["Payout"] = df["Payout"].map(lambda x: f"${x * payout_amount:.2f}")
+    # df["Median"] = df["Median"].map(lambda x: f"{x*100:.1f}%")
+    # df["Payout"] = df["Payout"].map(lambda x: f"${x * payout_amount:.2f}")
     df = df.sort_values(
         by=["Current", "Projection"], ascending=[False, False]
     ).reset_index(drop=True)
@@ -189,7 +190,7 @@ def getTeamLogo(team_name, fetch=False, league=LEAGUE):
             img = Image.open(BytesIO(response.content))
             img.convert("RGB").save(file_path, "JPEG")
         except:
-            print(f"Cannot load:{fil}")
+            print(f"Cannot load:{file_path}")
 
     return file_path
 
@@ -197,6 +198,8 @@ def getTeamLogo(team_name, fetch=False, league=LEAGUE):
 def to_median_json():
     df = get_median_summary()
     df["Logo"] = df["Team"].apply(getTeamLogo)
+    df = df.reset_index(drop=False, names=["Rank"])
+    df.columns = list(map(lambda col: col.lower(), df.columns))
     curr_time = datetime.now().strftime("%a-%I:%M%p-%-m.%d.%y")
     df.to_json(f"backend/archive/standings-{curr_time}.json", orient="records")
     df.to_json(f"app/standings.json", orient="records")
