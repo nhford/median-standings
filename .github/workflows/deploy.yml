@@ -8,6 +8,10 @@ on:
   # Runs on pushes targeting the default branch
   push:
     branches: ["main"]
+  schedule:
+    - cron: "2 0 * 9-12,1 1" # Runs 8pm EST every Sunday, but only during the months of September through January
+    - cron: "2 3 * 9-12,1 1" # Runs 11:30pm EST every Sunday (3:30am UTC)
+    - cron: "30 3 * 9-12,1 6" # Runs 11:30pm EST every Thursday (3:30 am UTC)
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
