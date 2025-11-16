@@ -3,7 +3,6 @@
 
 import pandas as pd
 from espn_api.football import League
-from tqdm import tqdm
 import os
 import requests
 from PIL import Image
@@ -11,7 +10,6 @@ from io import BytesIO
 from datetime import datetime
 import re
 import json
-from IPython.display import HTML
 
 import numpy as np
 from scipy.stats import gamma
