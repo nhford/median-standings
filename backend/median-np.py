@@ -197,7 +197,8 @@ def getTeamLogo(team_name, fetch=False, league=LEAGUE):
 
 
 def save_metadata(display_time):
-    metadata = {"last_updated": display_time}
+    current_week = LEAGUE.current_week
+    metadata = {"last_updated": display_time, "current_week": current_week}
     with open("app/metadata.json", "w") as json_file:
         json.dump(metadata, json_file, indent=4)
 
