@@ -10,6 +10,7 @@ from PIL import Image
 from io import BytesIO
 from datetime import datetime
 import re
+import json
 from IPython.display import HTML
 
 import numpy as np
@@ -195,13 +196,26 @@ def getTeamLogo(team_name, fetch=False, league=LEAGUE):
     return file_path
 
 
+def save_metadata(display_time):
+    metadata = {"last_updated": display_time}
+    with open("app/metadata.json", "w") as json_file:
+        json.dump(metadata, json_file, indent=4)
+
+
 def to_median_json():
     df = get_median_summary()
     df["Logo"] = df["Team"].apply(getTeamLogo)
     df = df.reset_index(drop=False, names=["Rank"])
     df.columns = list(map(lambda col: col.lower(), df.columns))
-    curr_time = datetime.now().strftime("%a-%I:%M%p-%-m.%d.%y")
-    df.to_json(f"backend/archive/standings-{curr_time}.json", orient="records")
+    curr_time = datetime.now()
+    file_time = curr_time.strftime("%a-%I:%M%p-%-m.%d.%y")
+    display_time = (
+        curr_time.strftime("%A, %b %-d %-I:%M%p")
+        .replace("PM", "pm")
+        .replace("AM", "am")
+    )
+    save_metadata(display_time)
+    df.to_json(f"backend/archive/standings-{file_time}.json", orient="records")
     df.to_json(f"app/standings.json", orient="records")
 
 

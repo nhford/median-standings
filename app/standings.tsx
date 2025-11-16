@@ -2,7 +2,7 @@
 
 import standings from "./standings.json";
 import React, { useState } from "react";
-import { handleSort, teamRow, sortkey, PAYOUT } from "./util";
+import { handleSort, teamRow, sortkey, PAYOUT, sortIcon } from "./util";
 
 const team_entries: teamRow[] = Object.values(standings);
 
@@ -15,60 +15,58 @@ export default function Standings() {
   });
 
   return (
-    <>
-      <table className="text-black">
-        <thead>
-          <tr className="text-sm text-left">
-            {[
-              { key: "team", label: "Team" },
-              { key: "current", label: "Current Score" },
-              { key: "projection", label: "Projected Score" },
-              { key: "median", label: "Median %" },
-              { key: "payout", label: "Expected Payout" },
-            ].map((col) => (
-              <th
-                key={`label_${col.key}`}
-                className="px-1 whitespace-nowrap"
-                style={{ cursor: "pointer" }}
-                onClick={() =>
-                  handleSort({
-                    data: data,
-                    setData: setData,
-                    sorted: sorted,
-                    setSorted: setSorted,
-                    key: col.key as sortkey,
-                    natural: col.key == "team" ? "desc" : "asc",
-                  })
-                }
-              >
-                {col.label}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((team) => (
-            <React.Fragment key={team.team}>
-              <tr className={team.rank <= 6 ? `bg-gray-300` : ``}>
-                {/* <td>
+    <table className="text-black w-full text-left border border-black">
+      <thead className="text-wrap max-w-md">
+        <tr className="text-xs sm:text-sm max-w-md text-wrap">
+          {[
+            { key: "team", label: "Team" },
+            { key: "current", label: "Current Score" },
+            { key: "projection", label: "Projected Score" },
+            { key: "median", label: "Median %" },
+            { key: "payout", label: "Expected Payout" },
+          ].map((col) => (
+            <th
+              key={`label_${col.key}`}
+              className="px-1 whitespace text-left"
+              style={{ cursor: "pointer" }}
+              onClick={() =>
+                handleSort({
+                  data: data,
+                  setData: setData,
+                  sorted: sorted,
+                  setSorted: setSorted,
+                  key: col.key as sortkey,
+                  natural: col.key == "team" ? "desc" : "asc",
+                })
+              }
+            >
+              {col.label} {sortIcon(sorted, col.key as sortkey)}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {data.map((team) => (
+          <React.Fragment key={team.team}>
+            <tr className={`${team.rank <= 6 ? "bg-zinc-300" : ""} text-sm`}>
+              {/* <td>
                   <img
                     className="standingsLogo"
                     src={imgPath(sport, row.abbrev)}
                     alt={row.abbrev + " Logo"}
                   ></img>
                 </td> */}
-                <td>{team.team}</td>
-                <td>{team.current}</td>
-                <td>{team.projection}</td>
-                <td>{`${Math.round(team.median * 1000) / 10}%`}</td>
-                <td>{`$${(Math.round(team.payout * PAYOUT * 100) / 100).toFixed(
-                  2
-                )}`}</td>
-              </tr>
-            </React.Fragment>
-          ))}
-        </tbody>
-      </table>
-    </>
+              <td className="px-1 text-xs">{team.team}</td>
+              <td>{team.current}</td>
+              <td>{team.projection}</td>
+              <td>{`${Math.round(team.median * 1000) / 10}%`}</td>
+              <td>{`$${(Math.round(team.payout * PAYOUT * 100) / 100).toFixed(
+                2
+              )}`}</td>
+            </tr>
+          </React.Fragment>
+        ))}
+      </tbody>
+    </table>
   );
 }
