@@ -5,9 +5,11 @@ on:
   push:
     branches: ["main"]
   schedule:
-    - cron: "58 23 * 9-12,1 0" # Runs 7:58pm EST every Sunday, but only during the months of September through January
-    - cron: "28 3 * 9-12,1 1" # Runs 11:28pm EST every Sunday (3:28am UTC)
-    - cron: "28 3 * 9-12,1 6" # Runs 11:28pm EST every Thursday (3:28 am UTC)
+    # Thursdays 11:28pm, Sundays 7:58pm & 11:28pm, account for UTC conversion
+    - cron: "58 0 * 9-12,1 1" # Sunday 7:58pm EST  →  00:58 UTC Monday  (day-of-week = Monday)
+    - cron: "15 1 * 9-12,1 1" # Sunday 8:15pm EST  →  01:15 UTC Monday  (day-of-week = Monday)
+    - cron: "28 4 * 9-12,1 1" # Sunday 11:28pm EST → 04:28 UTC Monday (day-of-week = Monday)
+    - cron: "28 4 * 9-12,1 5" # Thursday 11:28pm EST → 04:28 UTC Friday (day-of-week = Friday)
   workflow_dispatch: # Allows manual triggering
 
 jobs:
