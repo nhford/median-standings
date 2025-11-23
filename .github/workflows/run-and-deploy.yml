@@ -9,10 +9,10 @@ on:
   push:
     branches: ["main"]
   schedule:
+    # Daily at 8pm
     # Thursdays 11:30pm, Sundays 8pm & 11:30pm, account for UTC conversion
-    - cron: "0 1 * 9-12,1 1" # Sunday 8pm EST  →  01:00 UTC Monday  (day-of-week = Monday)
-    - cron: "30 4 * 9-12,1 1" # Sunday 11:30pm EST → 04:30 UTC Monday (day-of-week = Monday)
-    - cron: "30 4 * 9-12,1 5" # Thursday 11:30pm EST → 04:30 UTC Friday (day-of-week = Friday)
+    - cron: "0 1 * 9-12,1 *" # Daily 8pm EST  →  Daily 01:00 UTC
+    - cron: "30 4 * 9-12,1 1,5" # Sundays, Thursdays 11:30pm EST → 04:30 UTC Mondays, Fridays
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -30,6 +30,46 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Run median update
+  run-notebooks:
+    runs-on: ubuntu-latest
+
+    env:
+      TZ: America/New_York
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set Up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install Dependencies
+        run: |
+          pip install \
+            pandas \
+            python-dotenv \
+            requests \
+            pillow \
+            numpy \
+            scipy \
+            espn-api
+
+      - name: Push median script
+        run: |
+          python backend/median-np.py
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Automated median update"
+          git push
+        continue-on-error: true # Prevent failure if no changes
+
   # Build job
   build:
     runs-on: ubuntu-latest

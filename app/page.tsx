@@ -23,8 +23,8 @@ export default function Home() {
             </p>
           </div>
           <div className="text-sm">
-            <p>Update Schedule:</p>
-            <p>Thursdays 11:30pm, Sundays 8pm & 11:30pm</p>
+            <p>Approximate Update Schedule:</p>
+            <p>Daily 8pm, and Sunday & Thursdays 11:30pm</p>
           </div>
           <div className="py-2">
             <Footer />
