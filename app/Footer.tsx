@@ -1,5 +1,3 @@
-import LinkedInIcon from "@mui/icons-material/LinkedIn";
-
 function VenmoIcon({ size = 30 }) {
   return (
     <>
