@@ -41,4 +41,4 @@ yarn-error.log*
 next-env.d.ts
 
 # later feature to implement
-/app/logos/
+app/logos/
