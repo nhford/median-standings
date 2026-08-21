@@ -14,6 +14,8 @@ ESPN only shows your chance to beat your current opponent, not your chance to fi
 
 This methodology is imperfect: gamma is a rough fit for player scoring, and ESPN projections aren't always true means. Individual team totals are more variable than real results; a large simulation count dampens that noise in the aggregate percentages.
 
+The standings table shows current score, ESPN projection, estimated chance of finishing in the top half (median %), and expected payout share.
+
 ## Stack
 
 - Next.js (static export) + React + Tailwind, deployed to GitHub Pages
@@ -30,7 +32,7 @@ npm run dev
 
 ### Backend (refresh standings)
 
-1. Copy `.env.example` to `.env` and fill in ESPN cookies from your browser session on espn.com (`espn_s2`, `SWID`).
+1. Copy `.env.example` to `.env` and fill in ESPN cookies from your browser session on espn.com (`espn_s2` → `ESPN_S2`, `SWID` → `ESPN_SWID`).
 2. Install Python deps and run the script from the repo root:
 
 ```bash
@@ -42,9 +44,16 @@ python backend/median-np.py
 
 That writes `app/standings.json`, `app/metadata.json`, and an archive snapshot under `backend/archive/`.
 
+Optional env (also in `.env.example`): `ESPN_LEAGUE_ID`, `ESPN_SEASON_ID` (set this to the current fantasy year), `SIM_N` (Monte Carlo draws; default 1000).
+
 ## GitHub Actions
 
-Scheduled and manual runs need repository secrets:
+`.github/workflows/run-and-deploy.yml` deploys the static export to GitHub Pages.
+
+- **Push to `main`** rebuilds and deploys whatever standings are already committed.
+- **Nightly / manual runs** refresh standings first (daily 8pm ET, plus Sun/Thu 11:30pm ET during the season), commit `app/standings.json`, `app/metadata.json`, and `backend/archive/`, then deploy.
+
+Those refresh jobs need repository secrets:
 
 - `ESPN_S2`
 - `ESPN_SWID`
