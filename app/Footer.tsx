@@ -77,7 +77,7 @@ export default function Footer() {
           <LinkedInSVG size={iconSize} />
         </a>
         <a
-          href="https://venmo.com/Noah-Ford-57"
+          href="https://venmo.com/noahhford"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Noah Ford on Venmo"
